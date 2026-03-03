@@ -1,9 +1,11 @@
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize({
-    dialect: "mysql",
+const sequelize = new Sequelize('aulaexpress', 'root', 'senai', {
+    host: 'localhost',
+    dialect: 'mysql',
+    port: 3306,
     storage: './database.sqlite'
-});
+})
 
 async function connect() {
     try {
