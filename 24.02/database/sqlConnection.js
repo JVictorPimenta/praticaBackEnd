@@ -1,4 +1,9 @@
 // import { Sequelize } from "sequelize";
+// import 'dotenv/config'
+
+// const database = process.env.DB
+// const user = process.env.DBUSER
+// const password = process.eventNames.DBPASSWORD
 
 // const sequelize = new Sequelize('aulaexpress', 'root', 'senai', {
 //     host: 'localhost',

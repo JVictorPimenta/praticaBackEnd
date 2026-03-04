@@ -1,5 +1,9 @@
 import { Sequelize } from "sequelize";
 
+const database = process.env.DB
+const user = process.env.DBUSER
+const password = process.env.DBPASSWORD
+
 const sequelize = new Sequelize('aulaexpress', 'root', 'senai', {
     host: 'localhost',
     dialect: 'mysql',

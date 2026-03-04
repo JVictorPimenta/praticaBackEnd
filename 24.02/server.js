@@ -1,11 +1,18 @@
 import express from 'express';
 import { connect, sequelize } from './models/index.js'
-import Category from './models/category.js';
+import Category from './models/Category.js';
 import Product from './models/Product.js';
 import './database/sqlConnection.js';
+import productRouter from './routes/productRoutes.js';
+import categoryRouter from './routes/categoryRoutes.js';
+import 'dotenv/config'
 
+const PORT = process.env.PORT || 3000;
 const app = express();
-app.use(express.json());
+
+app.use(json());
+app.use('/categories', categoryRouter)
+app.use('/products', productRouter)
 
 app.get("/", (req, res) => {
     res.send('<h1> servidor node ativo :D <h1/>');
