@@ -5,12 +5,12 @@ import Product from './models/Product.js';
 import './database/sqlConnection.js';
 import productRouter from './routes/productRoutes.js';
 import categoryRouter from './routes/categoryRoutes.js';
-import 'dotenv/config'
+import './.env'
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-app.use(json());
+app.use(express.json());
 app.use('/categories', categoryRouter)
 app.use('/products', productRouter)
 
