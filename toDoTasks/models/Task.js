@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import {sequelize} from "./index.js";
+import {sequelize} from "../database/sqlConnection.js";
 
 const Task = sequelize.define('Task', {
     title: {
@@ -9,10 +9,12 @@ const Task = sequelize.define('Task', {
     description: {
         type: DataTypes.STRING
     },
-    completed: { 
+    completed: {
         type: DataTypes.BOOLEAN,
-        completed: false
+        defaultValue: false
     }
+    }, {
+    timestamps: false
 });
 
 export default Task;
