@@ -33,3 +33,35 @@ export const register = async (req, res) => {
         res.status(500).json({ error: 'erro no servidor, ' + err })
     }
 };
+
+// Login
+
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // verifica usuário
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(400).json({ error: 'Usuário não encontrado' });
+    }
+
+    // compara senha
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: 'Senha inválida' });
+    }
+
+    // gera token
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.json({ message: 'Login realizado', token });
+    
+  } catch (err) {
+    res.status(500).json({ error: 'Erro no servidor' });
+  }
+};

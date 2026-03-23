@@ -14,6 +14,8 @@ app.use(express.json());
 app.use('/categories', categoryRouter)
 app.use('/products', productRouter)
 
+app.use('/auth', authRoutes);
+
 app.get("/", (req, res) => {
     res.send('<h1> servidor node ativo :D <h1/>');
 });
