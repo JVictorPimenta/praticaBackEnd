@@ -1,67 +1,53 @@
-import User from '../models/User.js';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import User from "../models/User.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
-const JWT_SECRET = 'seu_segredo_super_secreto';
-
-// REGISTRAR ASSADAFJAKBGSD
-
-export const register = async (req, res) => {
-
+const SECRET = process.env.JWT_SECRET || "segredo";
+const authController = {
+  register: async (req, res) => {
     try {
+      const { email, password } = req.body;
 
-        const {email, password } = req.body;
+      // hash da senha
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-        // verificando se já existe
-        const userExists = await User.findOne({ where: email });
+      const user = await User.create({
+        email,
+        password: hashedPassword,
+      });
 
-        if (userExists) {
-            return res.status(400).json({ error: 'usuário já existe' })
-        }
-
-        // hash da senha
-        const hashedPassword = await bcrypt.hash(password, 10);
-        
-        // salva no banco
-        const user = await User.create({
-            email,
-            password: hashedPassword
-        });
-
-        res.status(200).json({ message: 'usuário criado', user });
-    } catch(err) {
-        res.status(500).json({ error: 'erro no servidor, ' + err })
+      res.status(201).json({ message: "Usuário criado", user });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
+  },
+
+  login: async (req, res) => {
+    try {
+      const { email, password } = req.body;
+
+      const user = await User.findOne({ where: { email } });
+
+      if (!user) {
+        return res.status(404).json({ message: "Usuário não encontrado" });
+      }
+
+      // comparar senha
+      const validPassword = await bcrypt.compare(password, user.password);
+
+      if (!validPassword) {
+        return res.status(401).json({ message: "Senha inválida" });
+      }
+
+      // gerar token
+      const token = jwt.sign({ id: user.id, email: user.email }, SECRET, {
+        expiresIn: "1h",
+      });
+
+      res.json({ message: "Login sucesso", token });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
 };
-
-// Login
-
-export const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // verifica usuário
-    const user = await User.findOne({ where: { email } });
-    if (!user) {
-      return res.status(400).json({ error: 'Usuário não encontrado' });
-    }
-
-    // compara senha
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ error: 'Senha inválida' });
-    }
-
-    // gera token
-    const token = jwt.sign(
-      { id: user.id, email: user.email },
-      JWT_SECRET,
-      { expiresIn: '1h' }
-    );
-
-    res.json({ message: 'Login realizado', token });
-    
-  } catch (err) {
-    res.status(500).json({ error: 'Erro no servidor' });
-  }
-};
+export default authController;

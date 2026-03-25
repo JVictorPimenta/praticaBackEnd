@@ -1,20 +1,22 @@
-import express from 'express';
+import express, { json } from 'express';
 import { connect, sequelize } from './models/index.js'
 import Category from './models/Category.js';
 import Product from './models/Product.js';
+import User from './models/User.js';
 import './database/sqlConnection.js';
 import productRouter from './routes/productRoutes.js';
 import categoryRouter from './routes/categoryRoutes.js';
+import authRouter from "./routes/authRouter.js";
 import './.env'
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-app.use(express.json());
-app.use('/categories', categoryRouter)
-app.use('/products', productRouter)
+app.use(json());
+app.use('/categories', categoryRouter);
+app.use('/products', productRouter);
 
-app.use('/auth', authRoutes);
+app.use('/auth', authRouter);
 
 app.get("/", (req, res) => {
     res.send('<h1> servidor node ativo :D <h1/>');
