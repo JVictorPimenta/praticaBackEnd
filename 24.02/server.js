@@ -1,5 +1,5 @@
 import express, { json } from 'express';
-import { connect, sequelize } from './models/index.js'
+import { connect, sequelize } from './models/index.js';
 import Category from './models/Category.js';
 import Product from './models/Product.js';
 import User from './models/User.js';
@@ -7,8 +7,7 @@ import './database/sqlConnection.js';
 import productRouter from './routes/productRoutes.js';
 import categoryRouter from './routes/categoryRoutes.js';
 import authRouter from "./routes/authRouter.js";
-import authMiddleware from './middleware/authMiddleware.js';
-import './.env'
+import './.env';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -16,31 +15,31 @@ const app = express();
 app.use(json());
 app.use('/categories', categoryRouter);
 app.use('/auth', authRouter);
-app.use('/products', authMiddleware, productRouter);
+app.use('/products', productRouter);
 
 app.get("/", (req, res) => {
-    res.send('<h1> servidor node ativo :D <h1/>');
+  res.send('<h1> servidor node ativo :D <h1/>');
 });
 
-app.get('/hello', (req,res) => {
-    res.send({message: 'Hello world!'})})
+app.get('/hello', (req, res) => {
+  res.send({ message: 'Hello world!' });
+});
 
 app.get('/info', (req, res) => {
-    res.send({
-        curso: 'Desenvolvimento de Sistemas',
-        modulo: 'backEnd',
-        versao: 1.0
-    })
-})
+  res.send({
+    curso: 'Desenvolvimento de Sistemas',
+    modulo: 'backEnd',
+    versao: 1.0
+  });
+});
 
-// Rota para sincronizar o banco e criar dados
 app.get("/sync", async (req, res) => {
   try {
-    await sequelize.sync({ force: true }); // recria tabelas
-    console.log("✅ Tabelas sincronizadas!");
+    await sequelize.sync({ force: true });
+    console.log("Tabelas sincronizadas");
 
     const cat = await Category.create({
-      name: "Eletrônicos",
+      name: "Eletronicos",
       description: "Dispositivos e tecnologia"
     });
 
@@ -63,13 +62,12 @@ app.get("/sync", async (req, res) => {
   }
 });
 
-// Rota para listar categorias com produtos
 app.get("/categories", async (req, res) => {
   const categories = await Category.findAll({ include: "products" });
   res.json(categories);
 });
 
-app.listen(3000, async () => {
+app.listen(PORT, async () => {
   await connect();
-  console.log("🚀 Servidor rodando em http://localhost:3000");
+  console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
