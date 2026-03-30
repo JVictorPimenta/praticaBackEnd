@@ -7,6 +7,7 @@ import './database/sqlConnection.js';
 import productRouter from './routes/productRoutes.js';
 import categoryRouter from './routes/categoryRoutes.js';
 import authRouter from "./routes/authRouter.js";
+import authMiddleware from './middleware/authMiddleware.js';
 import './.env'
 
 const PORT = process.env.PORT || 3000;
@@ -14,9 +15,8 @@ const app = express();
 
 app.use(json());
 app.use('/categories', categoryRouter);
-app.use('/products', productRouter);
-
 app.use('/auth', authRouter);
+app.use('/products', authMiddleware, productRouter);
 
 app.get("/", (req, res) => {
     res.send('<h1> servidor node ativo :D <h1/>');
